@@ -10,72 +10,62 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import baseURL from "../config/baseUrl";
+
 export default function SuperDashboardPage() {
   const navigate = useNavigate();
 
   const [personsChecked, setPersonsChecked] = useState<
     PersonChecked[] | null
   >();
-  // Load user from sessionStorage
   const [user] = useState<Officer | null>(() => {
     const stored = sessionStorage.getItem("user");
     return stored ? (JSON.parse(stored) as Officer) : null;
   });
 
+  const [loading, setLoading] = useState(true);
+  const [importedCount, setImportedCount] = useState<number | null>(null);
+
   useEffect(() => {
     if (user) sessionStorage.setItem("user", JSON.stringify(user));
   }, [user]);
 
-  // Role protection
   useEffect(() => {
     const isSuperintendent = user?.role.toLowerCase() === "superintendent";
-    console.log(user?.role.toLowerCase());
     if (!isSuperintendent) {
-      navigate("/dashboard");
       window.alert("Unauthorized access!");
+      navigate("/dashboard");
     }
   }, [user, navigate]);
 
-  const [loading, setLoading] = useState(true);
-  const [importedCount, setImportedCount] = useState<number | null>(null);
-
-  // Fetch persons from backend
   useEffect(() => {
     const fetchPersonsChecked = async () => {
       try {
         const res = await axios.get(`${baseURL}/checked-persons/all`);
         if (res.status === 200) {
           setPersonsChecked(res.data);
-          setLoading(false);
         }
       } catch (err: any) {
-        if (err.response?.status === 404) {
-          setPersonsChecked(null);
-        } else {
-          console.error("Fetch error:", err.message);
-        }
+        if (err.response?.status === 404) setPersonsChecked(null);
+        else console.error("Fetch error:", err.message);
+      } finally {
+        setLoading(false);
       }
     };
     fetchPersonsChecked();
   }, []);
-  console.log(personsChecked);
 
-  const goToDashboard = () => {
-    navigate("/dashboard");
-  };
+  const goToDashboard = () => navigate("/dashboard");
 
-  // Export to XLSX
   const exportToXLSX = () => {
-    if (personsChecked && personsChecked !== null) {
-      const worksheet = XLSX.utils.json_to_sheet(personsChecked);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "PersonsChecked");
-      XLSX.writeFile(workbook, "persons_checked.xlsx");
-    }
+    if (!personsChecked) return;
+    const worksheet = XLSX.utils.json_to_sheet(personsChecked);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "PersonsChecked");
+    XLSX.writeFile(workbook, "persons_checked.xlsx");
   };
 
-  // Export to PDF
   const exportToPDF = () => {
+    if (!personsChecked) return;
     const doc = new jsPDF();
     doc.text("Persons Checked Report", 14, 15);
 
@@ -95,7 +85,7 @@ export default function SuperDashboardPage() {
           "Officer",
         ],
       ],
-      body: personsChecked?.map((p) => [
+      body: personsChecked.map((p) => [
         p.id,
         p.firstName,
         p.lastName,
@@ -112,13 +102,11 @@ export default function SuperDashboardPage() {
     doc.save("persons_checked.pdf");
   };
 
-  // Import from XLSX
   const importFromXLSX = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
-
     reader.onload = (event) => {
       const data = event.target?.result;
       if (!data) return;
@@ -154,7 +142,7 @@ export default function SuperDashboardPage() {
 
       if (imported.length > 0) {
         setPersonsChecked(imported);
-        setImportedCount(imported.length); // Show feedback
+        setImportedCount(imported.length);
       }
     };
 
@@ -165,29 +153,110 @@ export default function SuperDashboardPage() {
   if (loading) return <p>Loading statistics...</p>;
 
   return (
-    <>
+    <div
+      style={{
+        padding: "20px",
+        fontFamily: "Arial, sans-serif",
+        maxWidth: "1200px",
+        margin: "0 auto",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
       <RegisterPage />
 
-      {/* Action Buttons */}
       <div
         style={{
           margin: "20px 0",
           display: "flex",
-          gap: 12,
+          flexWrap: "wrap",
+          gap: "12px",
           alignItems: "center",
         }}
       >
-        <button onClick={goToDashboard}>Dashboard</button>
-        <button onClick={exportToPDF}>Export PDF</button>
-        <button onClick={exportToXLSX}>Export XLSX</button>
+        <button
+          onClick={goToDashboard}
+          style={{
+            padding: "8px 16px",
+            borderRadius: "6px",
+            border: "none",
+            backgroundColor: "#1976d2",
+            color: "#fff",
+            fontWeight: 500,
+            cursor: "pointer",
+            transition: "background-color 0.2s",
+          }}
+          onMouseOver={(e) =>
+            (e.currentTarget.style.backgroundColor = "#1565c0")
+          }
+          onMouseOut={(e) =>
+            (e.currentTarget.style.backgroundColor = "#1976d2")
+          }
+        >
+          Dashboard
+        </button>
+
+        <button
+          onClick={exportToPDF}
+          style={{
+            padding: "8px 16px",
+            borderRadius: "6px",
+            border: "none",
+            backgroundColor: "#d32f2f",
+            color: "#fff",
+            fontWeight: 500,
+            cursor: "pointer",
+            transition: "background-color 0.2s",
+          }}
+          onMouseOver={(e) =>
+            (e.currentTarget.style.backgroundColor = "#b71c1c")
+          }
+          onMouseOut={(e) =>
+            (e.currentTarget.style.backgroundColor = "#d32f2f")
+          }
+        >
+          Export PDF
+        </button>
+
+        <button
+          onClick={exportToXLSX}
+          style={{
+            padding: "8px 16px",
+            borderRadius: "6px",
+            border: "none",
+            backgroundColor: "#388e3c",
+            color: "#fff",
+            fontWeight: 500,
+            cursor: "pointer",
+            transition: "background-color 0.2s",
+          }}
+          onMouseOver={(e) =>
+            (e.currentTarget.style.backgroundColor = "#2e7d32")
+          }
+          onMouseOut={(e) =>
+            (e.currentTarget.style.backgroundColor = "#388e3c")
+          }
+        >
+          Export XLSX
+        </button>
 
         <label
           style={{
             cursor: "pointer",
-            background: "#eee",
-            padding: "6px 12px",
-            borderRadius: 4,
+            backgroundColor: "#f5f5f5",
+            padding: "8px 16px",
+            borderRadius: "6px",
+            border: "1px solid #ccc",
+            fontWeight: 500,
+            transition: "background-color 0.2s",
           }}
+          onMouseOver={(e) =>
+            (e.currentTarget.style.backgroundColor = "#e0e0e0")
+          }
+          onMouseOut={(e) =>
+            (e.currentTarget.style.backgroundColor = "#f5f5f5")
+          }
         >
           Import XLSX
           <input
@@ -199,17 +268,16 @@ export default function SuperDashboardPage() {
         </label>
 
         {importedCount !== null && (
-          <span style={{ marginLeft: 10 }}>
+          <span style={{ marginLeft: "10px", fontWeight: 500, color: "#333" }}>
             Imported {importedCount} rows successfully!
           </span>
         )}
       </div>
 
-      {/* Chart updates automatically on import */}
       <EntryApprovalBarChart
         key={personsChecked?.length}
         persons={personsChecked}
       />
-    </>
+    </div>
   );
 }

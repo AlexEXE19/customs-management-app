@@ -13,13 +13,12 @@ public class OfficerResponseDTO {
         this.id = officer.getId();
         this.firstName = officer.getFirstName();
         this.lastName = officer.getLastName();
-        this.role = officer.getRole().name(); // enum -> string
+        this.role = officer.getRole().name();
     }
 
     public OfficerResponseDTO(String s, String firstName, String lastName, String password, String name) {
     }
 
-    // getters
     public String getId() { return id; }
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }

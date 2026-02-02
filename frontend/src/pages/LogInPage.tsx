@@ -79,7 +79,7 @@ export default function LogInPage() {
         <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Login</h2>
         <input
           type="text"
-          placeholder="Last Name"
+          placeholder="Last name"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
           required
@@ -89,6 +89,7 @@ export default function LogInPage() {
             borderRadius: "8px",
             border: "1px solid #ccc",
             fontSize: "14px",
+            boxSizing: "border-box",
           }}
         />
         <input
@@ -103,6 +104,7 @@ export default function LogInPage() {
             borderRadius: "8px",
             border: "1px solid #ccc",
             fontSize: "14px",
+            boxSizing: "border-box",
           }}
         />
         <button
@@ -118,6 +120,7 @@ export default function LogInPage() {
             fontSize: "16px",
             cursor: "pointer",
             transition: "background-color 0.2s",
+            boxSizing: "border-box",
           }}
           onMouseOver={(e) =>
             (e.currentTarget.style.backgroundColor = "#d32f2f")

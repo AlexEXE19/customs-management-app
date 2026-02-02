@@ -29,7 +29,6 @@ public class CheckedPersonController {
         this.personRepository = personRepository;
     }
 
-    // 1️⃣ Get all checked persons
     @GetMapping("/all")
     public List<CheckedPersonResponseDTO> getAllCheckedPersons() {
         return checkedPersonRepository.findAll()
@@ -48,17 +47,13 @@ public class CheckedPersonController {
                 .map(person -> {
                     CheckedPerson checked = new CheckedPerson();
 
-                    // 1️⃣ Generate UUID
                     checked.setId(UUID.randomUUID().toString());
 
-                    // 2️⃣ SET PERSON ENTITY (THIS IS THE FIX)
                     checked.setPerson(person);
 
-                    // 3️⃣ Set params
                     checked.setEntryApproved(approved);
                     checked.setOfficerId(officerId);
 
-                    // 4️⃣ Timestamp
                     DateTimeFormatter DateTimeFormatter = null;
                     checked.setChekedDate(
                             LocalDateTime.now()
@@ -72,7 +67,6 @@ public class CheckedPersonController {
     }
 
 
-    // 3️⃣ Delete last 3 oldest checked persons
     @DeleteMapping("/oldest")
     @Transactional
     public ResponseEntity<Void> deleteLastThreeOldest() {

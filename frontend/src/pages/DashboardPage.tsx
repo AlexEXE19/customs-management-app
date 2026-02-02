@@ -14,18 +14,15 @@ export default function DashboardPage() {
     const user = JSON.parse(storedUser);
     console.log(user);
   }
-  // 1. STATE WITH EXPANDED MOCK DATA
   const [personsChecked, setPersonsChecked] = useState<
     PersonChecked[] | null
   >();
 
-  // 2. FILTER STATE
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<
     "all" | "allowed" | "denied"
   >("all");
 
-  // 3. API FETCH (future use)
   useEffect(() => {
     const fetchPersonsChecked = async () => {
       try {
@@ -46,13 +43,11 @@ export default function DashboardPage() {
 
   const updateRiskLevel = async (id: string, newLevel: 1 | 2 | 3) => {
     try {
-      // 1️⃣ Call the PUT endpoint on your backend
       const res = await axios.put(`${baseURL}/persons/${id}/risk`, null, {
-        params: { riskLevel: newLevel }, // sending riskLevel as query param
+        params: { riskLevel: newLevel },
       });
 
       if (res.status === 200) {
-        // 2️⃣ Update local state
         setPersonsChecked((prev) => {
           if (!prev) return prev;
 
@@ -67,7 +62,6 @@ export default function DashboardPage() {
     }
   };
 
-  // 5. FILTERING
   const filteredPersons = (personsChecked || []).filter((person) => {
     const matchesSearch =
       person.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -83,7 +77,6 @@ export default function DashboardPage() {
     return matchesSearch && matchesStatus;
   });
 
-  // 6. RISK COLORS
   const getRiskColor = (level: number) => {
     switch (level) {
       case 1:
@@ -100,7 +93,6 @@ export default function DashboardPage() {
   const removeLastThreeRows = () => {
     setPersonsChecked((prev) => {
       if (!prev) return prev;
-      // Remove last 3 elements
       return prev.slice(0, Math.max(prev.length - 3, 0));
     });
   };
@@ -110,7 +102,6 @@ export default function DashboardPage() {
     navigate("/");
   };
 
-  // STYLES
   const tableHeaderStyle = {
     padding: "12px",
     textAlign: "left" as const,
@@ -134,7 +125,6 @@ export default function DashboardPage() {
       <section style={{ marginTop: "40px" }}>
         <h2>Check History</h2>
 
-        {/* CONTROLS */}
         <div
           style={{
             marginBottom: "20px",
@@ -167,7 +157,6 @@ export default function DashboardPage() {
           </Link>
         </div>
 
-        {/* TABLE */}
         {!personsChecked ? (
           <p>Loading history...</p>
         ) : filteredPersons.length === 0 ? (
@@ -239,7 +228,7 @@ export default function DashboardPage() {
                           color: record.entryApproved ? "green" : "red",
                         }}
                       >
-                        {record.entryApproved ? "✅ ALLOWED" : "❌ DENIED"}
+                        {record.entryApproved ? "ALLOWED" : "DENIED"}
                       </span>
                     </td>
 
@@ -277,7 +266,7 @@ export default function DashboardPage() {
             cursor: "pointer",
           }}
         >
-          🧹 Clean Last 3 Rows
+          Clean Last 3 Rows
         </button>
 
         <button

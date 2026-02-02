@@ -4,9 +4,8 @@ public class RegisterRequest {
     private String firstName;
     private String lastName;
     private String password;
-    private String role; // must be "Officer" or "Superintendent"
+    private String role;
 
-    // getters & setters
     public String getFirstName() { return firstName; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
 

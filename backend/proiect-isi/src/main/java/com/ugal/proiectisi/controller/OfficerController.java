@@ -43,27 +43,22 @@ public class OfficerController {
     @PostMapping("/register")
     public ResponseEntity<OfficerResponseDTO> register(@RequestBody RegisterRequest request) {
 
-        // Step 1: Check if lastName already exists
         if (officerRepository.findByLastName(request.getLastName()).isPresent()) {
-            return ResponseEntity.status(409).build(); // Conflict: user exists
+            return ResponseEntity.status(409).build();
         }
 
-        // Step 2: Create new Officer
         Officer newOfficer = new Officer();
-        newOfficer.setId(java.util.UUID.randomUUID().toString()); // unique string ID
+        newOfficer.setId(java.util.UUID.randomUUID().toString());
         newOfficer.setFirstName(request.getFirstName());
         newOfficer.setLastName(request.getLastName());
-        newOfficer.setPassword(request.getPassword()); // store plaintext for now
-        newOfficer.setRole(Officer.Role.valueOf(request.getRole())); // enum
+        newOfficer.setPassword(request.getPassword());
+        newOfficer.setRole(Officer.Role.valueOf(request.getRole()));
 
-        // Step 3: Save to database
         Officer savedOfficer = officerRepository.save(newOfficer);
 
-        // Step 4: Map to Response DTO
         OfficerResponseDTO response = new OfficerResponseDTO(savedOfficer);
 
-        // Step 5: Return response
-        return ResponseEntity.ok(response); // 200 OK
+        return ResponseEntity.ok(response);
     }
 
 

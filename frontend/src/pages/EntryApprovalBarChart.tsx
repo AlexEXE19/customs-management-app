@@ -86,22 +86,67 @@ export default function EntryApprovalBarChart({ persons }: Props) {
   ];
 
   return (
-    <div style={{ marginTop: 40 }}>
-      <h3>Entry Approval Overview</h3>
+    <div
+      style={{
+        marginTop: 40,
+        padding: 20,
+        maxWidth: 600,
+        marginLeft: "auto",
+        marginRight: "auto",
+        backgroundColor: "#fff",
+        borderRadius: 12,
+        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+      <h3 style={{ textAlign: "center", marginBottom: 20 }}>
+        Entry Approval Overview
+      </h3>
 
-      <div style={{ marginBottom: 16 }}>
-        <button onClick={() => setFilter("ALL")}>All</button>
-        <button onClick={() => setFilter("TODAY")}>Today</button>
-        <button onClick={() => setFilter("LAST_7_DAYS")}>Last 7 days</button>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: 12,
+          marginBottom: 20,
+        }}
+      >
+        {["ALL", "TODAY", "LAST_7_DAYS"].map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f as DateFilter)}
+            style={{
+              padding: "8px 16px",
+              borderRadius: 6,
+              border: "1px solid #1976d2",
+              backgroundColor: filter === f ? "#1976d2" : "#fff",
+              color: filter === f ? "#fff" : "#1976d2",
+              fontWeight: 500,
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+            onMouseOver={(e) => {
+              if (filter !== f)
+                e.currentTarget.style.backgroundColor = "#e3f2fd";
+            }}
+            onMouseOut={(e) => {
+              if (filter !== f) e.currentTarget.style.backgroundColor = "#fff";
+            }}
+          >
+            {f === "ALL" ? "All" : f === "TODAY" ? "Today" : "Last 7 Days"}
+          </button>
+        ))}
       </div>
 
-      <BarChart width={400} height={300} data={data}>
-        <CartesianGrid />
-        <XAxis dataKey="status" />
-        <YAxis allowDecimals={false} />
-        <Tooltip />
-        <Bar dataKey="count" />
-      </BarChart>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <BarChart width={500} height={300} data={data}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="status" />
+          <YAxis allowDecimals={false} />
+          <Tooltip />
+          <Bar dataKey="count" fill="#1976d2" radius={[4, 4, 0, 0]} />
+        </BarChart>
+      </div>
     </div>
   );
 }

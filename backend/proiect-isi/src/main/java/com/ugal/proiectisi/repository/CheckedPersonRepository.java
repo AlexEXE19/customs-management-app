@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface CheckedPersonRepository extends JpaRepository<CheckedPerson, String> {
 
-    // Find oldest N checked persons
     @Query("SELECT c FROM CheckedPerson c ORDER BY c.chekedDate ASC")
     List<CheckedPerson> findAllOrderedByDateAsc();
 

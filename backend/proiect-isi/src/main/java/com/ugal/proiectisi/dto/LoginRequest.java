@@ -5,7 +5,6 @@ public class LoginRequest {
     private String lastName;
     private String password;
 
-    // getters and setters
     public String getLastName() { return lastName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
 

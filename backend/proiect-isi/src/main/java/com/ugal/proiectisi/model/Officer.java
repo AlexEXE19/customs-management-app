@@ -20,7 +20,7 @@ public class Officer {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public static enum Role {  // ✅ make it static
+    public static enum Role {
         OFFICER,
         SUPERINTENDENT
     }

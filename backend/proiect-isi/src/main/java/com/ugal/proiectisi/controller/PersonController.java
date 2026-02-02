@@ -21,8 +21,8 @@ public class PersonController {
     @GetMapping("/{id}")
     public ResponseEntity<Person> getPerson(@PathVariable String id) {
         return personRepository.findById(id)
-                .map(ResponseEntity::ok) // Returns 200 + the object
-                .orElse(ResponseEntity.notFound().build()); // Returns 404 if missing
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{checkedId}/risk")
@@ -30,13 +30,10 @@ public class PersonController {
             @PathVariable String checkedId,
             @RequestParam int riskLevel) {
 
-        // 1️⃣ Find the checked person
         return checkedPersonRepository.findById(checkedId)
                 .map(checked -> {
-                    // 2️⃣ Find the actual person
                     return personRepository.findById(checked.getPersonId())
                             .map(person -> {
-                                // 3️⃣ Update risk level
                                 person.setRiskLevel(riskLevel);
                                 Person updated = personRepository.save(person);
                                 return ResponseEntity.ok(updated);

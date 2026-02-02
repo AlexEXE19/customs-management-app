@@ -13,14 +13,14 @@ public class CheckedPerson {
     @Id
     private String id;
 
-    @ManyToOne(fetch = FetchType.EAGER) // Fetch person data with checked record
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id", nullable = false)
-    private com.ugal.proiectisi.model.Person person; // Foreign key to Person
+    private com.ugal.proiectisi.model.Person person;
 
     private String chekedDate;
     private boolean entryApproved;
 
-    private String officerId; // Foreign key to Officer if you add that entity later
+    private String officerId;
 
     public void setRiskLevel(int riskLevel) {
     }
