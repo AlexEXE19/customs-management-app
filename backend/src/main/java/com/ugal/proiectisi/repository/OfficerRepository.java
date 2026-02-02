@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface OfficerRepository extends JpaRepository<Officer, Long> {
     Optional<Officer> findByLastNameAndPassword(String lastName, String password);
 
-    Optional<Object> findByLastName(String lastName);
+    Optional<Officer> findByLastName(String lastName);
 }
